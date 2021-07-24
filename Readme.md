@@ -1,13 +1,10 @@
-## Simple Account Management Service
-
-Written with SpringBoot
-
-### Features
+### Simple Account Management Service
 - Login/Register system
 - JWT Token Authentication
 - Account System(TRY, USD, EUR)
 - Send money to another account
 - List incoming or outgoing money transfers
+- Unit Tests(57) and Integration Tests(16). Total: 73
 
 ### Pre-Requirements
 > Docker must  be installed to build (for integration tests)

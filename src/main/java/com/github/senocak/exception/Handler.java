@@ -37,8 +37,8 @@ public class Handler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { ServerException.class })
     protected ResponseEntity<Object> handleServerException(Exception ex) {
         List<String> response = new ArrayList<>();
-        response.add(((ServerException) ex).getOmaErrorMessageType().getMessageId());
-        response.add(((ServerException) ex).getOmaErrorMessageType().getText());
+        response.add(((ServerException) ex).getErrorMessageType().getMessageId());
+        response.add(((ServerException) ex).getErrorMessageType().getText());
         if (!Objects.isNull(((ServerException) ex).getVariables()))
             response.addAll(Arrays.asList(((ServerException) ex).getVariables()));
         RESPONSE_SCHEMA.setMessage(response);

@@ -52,11 +52,11 @@ public class RequestSchema {
     @Setter
     public static class Transfer{
         @NotBlank
-        @Size(min = 12, max = 20)
+        @Size(min = 16, max = 40)
         private UUID fromAccountId;
 
         @NotBlank
-        @Size(min = 12, max = 20)
+        @Size(min = 16, max = 40)
         private UUID toAccountId;
 
         @NotBlank

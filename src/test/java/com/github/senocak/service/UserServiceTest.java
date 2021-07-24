@@ -1,13 +1,11 @@
 package com.github.senocak.service;
 
 import com.github.senocak.payload.RequestSchema;
-import com.github.senocak.payload.ResponseSchema;
 import com.github.senocak.util.TestConstants;
 import com.github.senocak.exception.ServerException;
 import com.github.senocak.model.User;
 import com.github.senocak.repository.UserRepository;
 import com.github.senocak.security.UserPrincipal;
-import com.sun.jna.platform.win32.LMAccess;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,6 +92,54 @@ class UserServiceTest {
         Assertions.assertThat(result).isEqualTo(TestConstants.USER_1);
     }
     @Test
+    void givenEmailWhenFindByEmailThenAssertResult() throws ServerException {
+        // Given
+        Mockito.doReturn(Optional.of(TestConstants.USER_1)).when(userRepository).findByEmail(TestConstants.EMAIL);
+        // When
+        User result = userService.findByEmail(TestConstants.EMAIL);
+        // Then
+        Assertions.assertThat(result).isEqualTo(TestConstants.USER_1);
+    }
+    @Test
+    void givenEmailWithServerExceptionWhenFindByEmailThenAssertResult() {
+        // When
+        Executable result = () -> userService.findByEmail(TestConstants.EMAIL);
+        // Then
+        org.junit.jupiter.api.Assertions.assertThrows(ServerException.class, result);
+    }
+    @Test
+    void givenUsernameWhenExistsByUsernameThenAssertResult() {
+        // Given
+        Mockito.doReturn(true).when(userRepository).existsByUsername(TestConstants.NAME);
+        // When
+        boolean result = userService.existsByUsername(TestConstants.NAME);
+        // Then
+        Assertions.assertThat(result).isTrue();
+    }
+    @Test
+    void givenUsernameWithServerExceptionWhenExistsByUsernameThenAssertResult() {
+        // When
+        boolean result = userService.existsByUsername(TestConstants.NAME);
+        // Then
+        Assertions.assertThat(result).isFalse();
+    }
+    @Test
+    void givenUsernameWhenExistsByEmailThenAssertResult() {
+        // Given
+        Mockito.doReturn(true).when(userRepository).existsByEmail(TestConstants.EMAIL);
+        // When
+        boolean result = userService.existsByEmail(TestConstants.EMAIL);
+        // Then
+        Assertions.assertThat(result).isTrue();
+    }
+    @Test
+    void givenUsernameWithServerExceptionWhenExistsByEmailThenAssertResult() {
+        // When
+        boolean result = userService.existsByEmail(TestConstants.EMAIL);
+        // Then
+        Assertions.assertThat(result).isFalse();
+    }
+    @Test
     void givenUserUpdateProfileWithExistsUsernameWhenLoadUserByIdThenAssertResult() {
         // Given
         RequestSchema.UserUpdateProfile userUpdateProfile = new RequestSchema.UserUpdateProfile();
@@ -137,5 +183,14 @@ class UserServiceTest {
         User patchUser = userService.patchUser(userUpdateProfile);
         // Then
         Assertions.assertThat(patchUser).isEqualTo(TestConstants.USER_1);
+    }
+    @Test
+    void givenUserWhenSaveThenAssertResult() {
+        // Given
+        Mockito.doReturn(TestConstants.USER_1).when(userRepository).save(TestConstants.USER_1);
+        // When
+        User save = userService.save(TestConstants.USER_1);
+        // Then
+        Assertions.assertThat(save).isEqualTo(TestConstants.USER_1);
     }
 }

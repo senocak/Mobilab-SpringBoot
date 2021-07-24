@@ -1,6 +1,6 @@
 package com.github.senocak.exception;
 
-import com.github.senocak.util.OmaErrorMessageType;
+import com.github.senocak.util.ErrorMessageType;
 import com.github.senocak.payload.ResponseSchema;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,10 +61,10 @@ class HandlerTest {
     @Test
     void givenRuntimeExceptionWhenHandleServerExceptionThenAssertResult(){
         // Given
-        ServerException ex = new ServerException(OmaErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{}, HttpStatus.BAD_REQUEST);
+        ServerException ex = new ServerException(ErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{}, HttpStatus.BAD_REQUEST);
         List<String> response = new ArrayList<>();
-        response.add(ex.getOmaErrorMessageType().getMessageId());
-        response.add(ex.getOmaErrorMessageType().getText());
+        response.add(ex.getErrorMessageType().getMessageId());
+        response.add(ex.getErrorMessageType().getText());
         RESPONSE_SCHEMA.setMessage(response);
         // When
         ResponseEntity<?> responseEntity = handler.handleServerException(ex);

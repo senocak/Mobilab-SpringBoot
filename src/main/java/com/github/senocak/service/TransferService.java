@@ -12,8 +12,7 @@ import com.github.senocak.model.User;
 import com.github.senocak.payload.RequestSchema;
 import com.github.senocak.payload.ResponseSchema;
 import com.github.senocak.repository.TransferRepository;
-import com.github.senocak.util.AppConstants;
-import com.github.senocak.util.OmaErrorMessageType;
+import com.github.senocak.util.ErrorMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +41,12 @@ public class TransferService {
         Account from = accountService.findById(transfer.getFromAccountId().toString());
         log.info("From Account is valid: {}", from);
         if (!user.getAccounts().contains(from))
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"User does not have access this account"}, HttpStatus.UNAUTHORIZED);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"User does not have access this account"}, HttpStatus.UNAUTHORIZED);
         if (from.getBalance().compareTo(new BigDecimal(0)) <= 0)
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Not valid money is found in sender account"}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Not valid money is found in sender account"}, HttpStatus.BAD_REQUEST);
         BigDecimal convertedAmount = convertCurrency(transfer.getCurrency(), transfer.getAmount(), from.getCurrency());
         if (from.getBalance().compareTo(convertedAmount) < 0)
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Can not send more than you have"}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Can not send more than you have"}, HttpStatus.BAD_REQUEST);
         Account to = accountService.findById(transfer.getToAccountId().toString());
         log.info("To Account is valid: {}", to);
         accountService.validateCurrency(transfer.getCurrency());
@@ -83,26 +82,25 @@ public class TransferService {
         User user = userService.loggedInUser();
         Account account = accountService.findById(accountId);
         if (!user.getAccounts().contains(account))
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"User does not have access this account", accountId}, HttpStatus.UNAUTHORIZED);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"User does not have access this account", accountId}, HttpStatus.UNAUTHORIZED);
         Page<Transfer> pagedResult;
+        boolean status = Objects.nonNull(fromDate) && Objects.nonNull(toDate);
         if (transferType.equals("incomings")){
-            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate)){
-                pagedResult = transferRepository
-                    .findAllByToAccountIdAndCreatedAtIsBetween(account, fromDate, toDate, paging);
+            if (status){
+                pagedResult = transferRepository.findAllByToAccountIdAndCreatedAtIsBetween(account, fromDate, toDate, paging);
             }else{
                 pagedResult = transferRepository.findAllByToAccountId(account, paging);
             }
         }else{
-            if (Objects.nonNull(fromDate) && Objects.nonNull(toDate)){
-                pagedResult = transferRepository
-                    .findAllByFromAccountIdAndCreatedAtIsBetween(account, fromDate, toDate, paging);
+            if (status){
+                pagedResult = transferRepository.findAllByFromAccountIdAndCreatedAtIsBetween(account, fromDate, toDate, paging);
             }else{
                 pagedResult = transferRepository.findAllByFromAccountId(account, paging);
             }
         }
-        return makeResponse(pagedResult);
+        return generateResponse(pagedResult);
     }
-    private ResponseSchema.PagedTransferResponse<?> makeResponse(Page<Transfer> pagedResult){
+    private ResponseSchema.PagedTransferResponse<?> generateResponse(Page<Transfer> pagedResult){
         List<Transfer> getAll = new ArrayList<>();
         if(pagedResult.hasContent()) getAll = pagedResult.getContent();
         List<ResponseSchema.TransferResponse> dtos = getAll.stream()

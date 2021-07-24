@@ -2,20 +2,19 @@ package com.github.senocak.util;
 
 import com.networknt.schema.ValidatorTypeCode;
 
-public enum OmaErrorMessageType {
+public enum ErrorMessageType {
   BASIC_INVALID_INPUT("SVC0001", "Invalid input value for message part %1"),
   GENERIC_SERVICE_ERROR("SVC0002", "The following service error occurred: %1. Error code is %2"),
   DETAILED_INVALID_INPUT("SVC0003", "Invalid input value for %1 %2: %3"),
   EXTRA_INPUT_NOT_ALLOWED("SVC0004", "Input %1 %2 not permitted in request"),
   MANDATORY_INPUT_MISSING("SVC0005", "Mandatory input %1 %2 is missing from request"),
-  UNAUTHORIZED("SVC0006", "UnAuthorized Endpoint"),
   JSON_SCHEMA_VALIDATOR("SVC0007", "Schema failed."),
   NOT_FOUND("SVC0008", "Entry is not found");
 
   private final String messageId;
   private final String text;
 
-  OmaErrorMessageType(final String messageId, final String text) {
+  ErrorMessageType(final String messageId, final String text) {
     this.messageId = messageId;
     this.text = text;
   }
@@ -28,7 +27,7 @@ public enum OmaErrorMessageType {
     return text;
   }
 
-  public static OmaErrorMessageType getOmaErrorFromValidationError(ValidatorTypeCode failureCode) {
+  public static ErrorMessageType getOmaErrorFromValidationError(ValidatorTypeCode failureCode) {
     switch (failureCode) {
       case MIN_LENGTH:
       case MAX_LENGTH:

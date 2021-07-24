@@ -6,7 +6,7 @@ import com.github.senocak.model.User;
 import com.github.senocak.payload.RequestSchema;
 import com.github.senocak.repository.AccountRepository;
 import com.github.senocak.util.AppConstants;
-import com.github.senocak.util.OmaErrorMessageType;
+import com.github.senocak.util.ErrorMessageType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,8 @@ public class AccountService {
     private final UserService userService;
 
     public Account findById(String id) throws ServerException {
-        return accountRepository.findById(id).orElseThrow(() -> new ServerException(OmaErrorMessageType.NOT_FOUND, new String[]{"Account", "id", id}, HttpStatus.NOT_FOUND));
+        return accountRepository.findById(id).orElseThrow(() -> new ServerException(
+            ErrorMessageType.NOT_FOUND, new String[]{"Account", "id", id}, HttpStatus.NOT_FOUND));
     }
     public Account saveAccount(Account account){
         return accountRepository.save(account);
@@ -28,7 +29,7 @@ public class AccountService {
         User user = userService.loggedInUser();
         Account account = findById(id);
         if (!user.getAccounts().contains(account))
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Account does not belong this user"}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Account does not belong this user"}, HttpStatus.BAD_REQUEST);
         account.setDeleted(true);
         accountRepository.save(account);
     }
@@ -41,7 +42,7 @@ public class AccountService {
             }
         }
         if (!valid)
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Curreny is not supported", currency}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Curreny is not supported", currency}, HttpStatus.BAD_REQUEST);
     }
     public Account addNewAccount(RequestSchema.NewAccount newAccount) throws ServerException {
         Account addNewAccount = Account.builder()

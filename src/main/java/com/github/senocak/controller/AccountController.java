@@ -10,7 +10,8 @@ import com.github.senocak.payload.ResponseSchema;
 import com.github.senocak.service.AccountService;
 import com.github.senocak.service.TransferService;
 import com.github.senocak.service.UserService;
-import com.github.senocak.util.OmaErrorMessageType;
+import com.github.senocak.util.JsonSchemaValidator;
+import com.github.senocak.util.ErrorMessageType;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,11 +35,12 @@ public class AccountController {
     private final TransferService transferService;
     private final AccountService accountService;
     private final ModelMapper modelMapper;
+    private final JsonSchemaValidator jsonSchemaValidator;
     private final ResponseSchema response = new ResponseSchema(true, null);
 
     @GetMapping("/me")
-    @ApiOperation(value = "Get User By Token", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> getMe() throws ServerException {
+    @ApiOperation(value = "Get User Info", response = ResponseSchema.class, tags = {"user"})
+    public ResponseEntity<?> getUser() throws ServerException {
         User user = userService.loggedInUser();
         log.info("Logged in user is: {}", user);
         ResponseSchema.UserProfile userProfile = modelMapper.map(user, ResponseSchema.UserProfile.class);
@@ -48,7 +50,8 @@ public class AccountController {
     }
     @PatchMapping("/update")
     @ApiOperation(value = "Update Profile", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> patchMe(@RequestBody RequestSchema.UserUpdateProfile userUpdateProfile) throws ServerException {
+    public ResponseEntity<?> patchUser(@RequestBody RequestSchema.UserUpdateProfile userUpdateProfile) throws ServerException {
+        jsonSchemaValidator.validateJsonSchema(userUpdateProfile, RequestSchema.UserUpdateProfile.class);
         User user = userService.patchUser(userUpdateProfile);
         log.info("Logged in user is: {}", user);
         ResponseSchema.UserProfile userProfile = modelMapper.map(user, ResponseSchema.UserProfile.class);
@@ -63,9 +66,10 @@ public class AccountController {
         response.setMessage(new String[]{"Account Deleted"});
         return ResponseEntity.ok(response);
     }
-    @PostMapping("/add")
+    @PostMapping("/addAccount")
     @ApiOperation(value = "Add New Account", response = ResponseSchema.class, tags = {"user"})
     public ResponseEntity<?> addAccount(@RequestBody RequestSchema.NewAccount newAccount) throws ServerException {
+        jsonSchemaValidator.validateJsonSchema(newAccount, RequestSchema.NewAccount.class);
         accountService.validateCurrency(newAccount.getCurrency());
         Account addNewAccount = accountService.addNewAccount(newAccount);
         ResponseSchema.AccountResponse accountResponse = modelMapper.map(addNewAccount, ResponseSchema.AccountResponse.class);
@@ -75,6 +79,7 @@ public class AccountController {
     @PostMapping("/send")
     @ApiOperation(value = "Send Money", response = ResponseSchema.class, tags = {"user"})
     public ResponseEntity<?> postTransfer(@RequestBody RequestSchema.Transfer transfer) throws ServerException, JsonProcessingException {
+        jsonSchemaValidator.validateJsonSchema(transfer, RequestSchema.Transfer.class);
         transferService.validateTransferObject(transfer);
         Transfer transferSaved = transferService.create(
             transfer.getCurrency(),
@@ -96,15 +101,17 @@ public class AccountController {
         @RequestParam(defaultValue = "") String toDate) throws ServerException {
         if (!transferType.equals("incomings") && !transferType.equals("outgoings")){
             log.error("Transfer should only be incomings or outgoings. Provided: {}", transferType);
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Transfer Type:" + transferType}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(
+                ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Transfer Type:" + transferType}, HttpStatus.BAD_REQUEST);
         }
         if (page < 1 || size < 1){
             log.error("Page: {} or Size: {} not valid.", page, size);
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Page: " + page, "Size: " + size}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(
+                ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Page: " + page, "Size: " + size}, HttpStatus.BAD_REQUEST);
         }
         if (!by.equals("asc") && !by.equals("desc")){
             log.error("Ordering Format must be asc or desc. Provided: {}", by);
-            throw new ServerException(OmaErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Order: "+ by}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.BASIC_INVALID_INPUT, new String[]{"Order: "+ by}, HttpStatus.BAD_REQUEST);
         }
         Sort sort = by.equals("desc") ? Sort.by("createdAt").descending() : Sort.by("createdAt").ascending();
         Pageable paging = PageRequest.of(page - 1, size, sort);

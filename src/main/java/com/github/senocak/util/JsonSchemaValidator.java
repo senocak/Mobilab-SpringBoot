@@ -36,7 +36,7 @@ public class JsonSchemaValidator {
     public void validateJsonSchema(Object jsonBodyToValidate, Class<?> jsonSchemaClass) throws ServerException {
         if (Objects.isNull(jsonBodyToValidate)) {
             log.error(EMPTY_BODY);
-            throw new ServerException(OmaErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{EMPTY_BODY}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{EMPTY_BODY}, HttpStatus.BAD_REQUEST);
         }
 
         final Set<ValidationMessage> validationResult;
@@ -44,7 +44,7 @@ public class JsonSchemaValidator {
             validationResult = validateJsonMsgFromObject(jsonBodyToValidate, jsonSchemaClass);
         } catch (Exception ex) {
             log.error(UNABLE_VALIDATE);
-            throw new ServerException(OmaErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{UNABLE_VALIDATE}, HttpStatus.BAD_REQUEST);
+            throw new ServerException(ErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{UNABLE_VALIDATE}, HttpStatus.BAD_REQUEST);
         }
         checkValidationResult(validationResult);
     }
@@ -84,10 +84,10 @@ public class JsonSchemaValidator {
                     failedField = errorMessage.getPath().substring(errorMessage.getPath().lastIndexOf(DOT) + 1);
                     break;
             }
-            OmaErrorMessageType omaErrorMessageType = OmaErrorMessageType.getOmaErrorFromValidationError(failureCode);
+            ErrorMessageType errorMessageType = ErrorMessageType.getOmaErrorFromValidationError(failureCode);
             String[] variables = generateRequestErrorVariables(failureCode, failedField, errorMessage);
             log.info("Failures: {}", String.join(",", variables));
-            throw new ServerException(omaErrorMessageType, variables, HttpStatus.BAD_REQUEST);
+            throw new ServerException(errorMessageType, variables, HttpStatus.BAD_REQUEST);
         }
     }
     private String[] generateRequestErrorVariables(ValidatorTypeCode failureCode, String failedField, ValidationMessage errorMessage) {

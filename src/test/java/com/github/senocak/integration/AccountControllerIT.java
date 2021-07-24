@@ -197,7 +197,7 @@ class AccountControllerIT {
             .andExpect(MockMvcResultMatchers.jsonPath("$.message.next").value(false));
     }
     @Test
-    void givenUserUpdateProfileWhenPatchMeThenAssertResult() throws Exception {
+    void givenUserUpdateProfileWhenPatchUserThenAssertResult() throws Exception {
         // Given
         RequestSchema.UserUpdateProfile userUpdateProfile = new RequestSchema.UserUpdateProfile();
         userUpdateProfile.setName(TestConstants.NAME);
@@ -238,7 +238,7 @@ class AccountControllerIT {
         newAccount.setCurrency(AppConstants.CurrencyEnum.EUR.getCurrency());
         newAccount.setName(TestConstants.NAME);
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-            .post(BASE_URL + "/add")
+            .post(BASE_URL + "/addAccount")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(newAccount))
             .headers(httpHeaders);

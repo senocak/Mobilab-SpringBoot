@@ -3,6 +3,7 @@ package com.github.senocak.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.senocak.service.AccountService;
 import com.github.senocak.util.AppConstants;
+import com.github.senocak.util.JsonSchemaValidator;
 import com.github.senocak.util.TestConstants;
 import com.github.senocak.exception.ServerException;
 import com.github.senocak.payload.RequestSchema;
@@ -31,6 +32,7 @@ class AccountControllerTest {
     @Mock AccountService accountService;
     @Mock ModelMapper modelMapper;
     @Mock TransferService transferService;
+    @Mock JsonSchemaValidator jsonSchemaValidator;
     private final ResponseSchema response = new ResponseSchema(true, null);
 
     @BeforeEach
@@ -45,14 +47,14 @@ class AccountControllerTest {
         Mockito.doReturn(TestConstants.USER_PROFILE).when(modelMapper).map(TestConstants.USER_1, ResponseSchema.UserProfile.class);
         response.setMessage(TestConstants.USER_PROFILE);
         // When
-        ResponseEntity<?> responseEntity = accountController.getMe();
+        ResponseEntity<?> responseEntity = accountController.getUser();
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
     }
 
     @Test
-    void givenUserUpdateProfileObjectWhenPatchMeThenAssertResult() throws ServerException {
+    void givenUserUpdateProfileObjectWhenPatchUserThenAssertResult() throws ServerException {
         // Given
         RequestSchema.UserUpdateProfile userUpdateProfile = new RequestSchema.UserUpdateProfile();
         userUpdateProfile.setUsername(TestConstants.NAME);
@@ -62,7 +64,7 @@ class AccountControllerTest {
         Mockito.doReturn(TestConstants.USER_PROFILE).when(modelMapper).map(TestConstants.USER_1, ResponseSchema.UserProfile.class);
         response.setMessage(TestConstants.USER_PROFILE);
         // When
-        ResponseEntity<?> responseEntity = accountController.patchMe(userUpdateProfile);
+        ResponseEntity<?> responseEntity = accountController.patchUser(userUpdateProfile);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
