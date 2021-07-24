@@ -1,0 +1,49 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  datasource:
+    url: jdbc:mysql://db:3306/mobilab?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    initialization-mode: always
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: create-drop
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      fail-on-unknown-properties: true
+    time-zone: UTC
+    mapper:
+      sort-properties-alphabetically: false
+    servlet:
+      multipart:
+        max-file-size: 1MB
+        max-request-size: 1MB
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: off
+app:
+  jwtSecret: JWTSuperSecretKey
+  jwtExpirationInMs: 604800000
+management:
+  security:
+    enabled: false
+seed:
+  db: dev

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8:///testcontainer?TC_INITSCRIPT=db.sql
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+app:
+  jwtSecret: JWTSuperSecretKey
+  jwtExpirationInMs: 604800000
+seed:
+  db: it
