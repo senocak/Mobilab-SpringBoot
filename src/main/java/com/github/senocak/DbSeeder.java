@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class DbSeeder implements CommandLineRunner {
-    @Value("${seed.db}")
+    @Value("${app.db}")
     private String environment;
     private final Faker faker = new Faker();
     private final UserRepository userRepository;
@@ -32,7 +32,7 @@ public class DbSeeder implements CommandLineRunner {
     @Override
     public void run(String... strings) throws ServerException, JsonProcessingException {
         if(!environment.equals("dev")){
-            log.info("seed.db is not in dev mode, skip the seeders");
+            log.info("app.db is not in dev mode, skip the seeders");
             return;
         }
         log.info("Adding some dummy datas");

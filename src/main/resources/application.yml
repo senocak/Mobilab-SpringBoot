@@ -42,8 +42,7 @@ logging:
 app:
   jwtSecret: JWTSuperSecretKey
   jwtExpirationInMs: 604800000
+  db: dev
 management:
   security:
     enabled: false
-seed:
-  db: dev
