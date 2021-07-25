@@ -20,7 +20,6 @@ import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ class HandlerTest {
         RuntimeException ex = new RuntimeException();
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleBadCredentialsException(ex);
+        ResponseEntity<Object> responseEntity = handler.handleBadCredentialsException(ex);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -53,7 +52,7 @@ class HandlerTest {
         RuntimeException ex = new RuntimeException();
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleAccessDeniedException(ex);
+        ResponseEntity<Object> responseEntity = handler.handleAccessDeniedException(ex);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -67,7 +66,7 @@ class HandlerTest {
         response.add(ex.getErrorMessageType().getText());
         RESPONSE_SCHEMA.setMessage(response);
         // When
-        ResponseEntity<?> responseEntity = handler.handleServerException(ex);
+        ResponseEntity<Object> responseEntity = handler.handleServerException(ex);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -78,7 +77,7 @@ class HandlerTest {
         HttpRequestMethodNotSupportedException ex = new HttpRequestMethodNotSupportedException("");
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleHttpRequestMethodNotSupported(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleHttpRequestMethodNotSupported(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.METHOD_NOT_ALLOWED);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -89,7 +88,7 @@ class HandlerTest {
         HttpMessageNotReadableException ex = Mockito.mock(HttpMessageNotReadableException.class);
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleHttpMessageNotReadable(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleHttpMessageNotReadable(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -100,7 +99,7 @@ class HandlerTest {
         HttpMediaTypeNotSupportedException ex = new HttpMediaTypeNotSupportedException("");
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleHttpMediaTypeNotSupported(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleHttpMediaTypeNotSupported(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -111,7 +110,7 @@ class HandlerTest {
         Exception ex = new Exception("");
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleGeneralException(ex);
+        ResponseEntity<Object> responseEntity = handler.handleGeneralException(ex);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -122,7 +121,7 @@ class HandlerTest {
         NoHandlerFoundException ex = new NoHandlerFoundException("", "", new HttpHeaders());
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleNoHandlerFoundException(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleNoHandlerFoundException(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -133,7 +132,7 @@ class HandlerTest {
         MissingPathVariableException ex = Mockito.mock(MissingPathVariableException.class);
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleMissingPathVariable(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleMissingPathVariable(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -144,7 +143,7 @@ class HandlerTest {
         MissingServletRequestParameterException ex = Mockito.mock(MissingServletRequestParameterException.class);
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleMissingServletRequestParameter(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleMissingServletRequestParameter(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);
@@ -155,7 +154,7 @@ class HandlerTest {
         TypeMismatchException ex = Mockito.mock(TypeMismatchException.class);
         RESPONSE_SCHEMA.setMessage(new String[]{ex.getMessage()});
         // When
-        ResponseEntity<?> responseEntity = handler.handleTypeMismatch(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        ResponseEntity<Object> responseEntity = handler.handleTypeMismatch(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(RESPONSE_SCHEMA);

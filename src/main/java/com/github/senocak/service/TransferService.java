@@ -66,7 +66,7 @@ public class TransferService {
         log.info(url);
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
         log.info(responseEntity.getBody());
-        ResponseSchema.CurrencyResponseFromAPI<?> currencyResponseFromAPI = objectMapper.readValue(responseEntity.getBody(), ResponseSchema.CurrencyResponseFromAPI.class);
+        ResponseSchema.CurrencyResponseFromAPI currencyResponseFromAPI = objectMapper.readValue(responseEntity.getBody(), ResponseSchema.CurrencyResponseFromAPI.class);
         return new BigDecimal(currencyResponseFromAPI.getRates().get(toCurrency)).multiply(amount);
     }
     private void onPostPersist(final Transfer transfer) throws JsonProcessingException, ServerException {
@@ -78,7 +78,7 @@ public class TransferService {
         to.setBalance(to.getBalance().add(convertCurrency(transfer.getCurrency(), transfer.getAmount(), to.getCurrency())));
         accountService.saveAccount(to);
     }
-    public ResponseSchema.PagedTransferResponse<?> getAllForAccount(String transferType, String accountId, Pageable paging, Instant fromDate, Instant toDate) throws ServerException {
+    public ResponseSchema.PagedTransferResponse getAllForAccount(String transferType, String accountId, Pageable paging, Instant fromDate, Instant toDate) throws ServerException {
         User user = userService.loggedInUser();
         Account account = accountService.findById(accountId);
         if (!user.getAccounts().contains(account))
@@ -100,7 +100,7 @@ public class TransferService {
         }
         return generateResponse(pagedResult);
     }
-    private ResponseSchema.PagedTransferResponse<?> generateResponse(Page<Transfer> pagedResult){
+    private ResponseSchema.PagedTransferResponse generateResponse(Page<Transfer> pagedResult){
         List<Transfer> getAll = new ArrayList<>();
         if(pagedResult.hasContent()) getAll = pagedResult.getContent();
         List<ResponseSchema.TransferResponse> dtos = getAll.stream()

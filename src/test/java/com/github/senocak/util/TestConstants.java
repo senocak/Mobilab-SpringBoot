@@ -28,6 +28,6 @@ public class TestConstants {
     public static final ResponseSchema.AccountResponseForTransfer FROM_ACCOUNT_RESPONSE_FOR_TRANSFER = ResponseSchema.AccountResponseForTransfer.builder().id(ACCOUNT_1.getId()).name(NAME).currency(CURRENCY).build();
     public static final ResponseSchema.AccountResponseForTransfer TO_ACCOUNT_RESPONSE_FOR_TRANSFER = ResponseSchema.AccountResponseForTransfer.builder().id(ACCOUNT_2.getId()).name(NAME).currency(CURRENCY).build();
     public static final ResponseSchema.TransferResponse TRANSFER_RESPONSE = ResponseSchema.TransferResponse.builder().amount(TestConstants.AMOUNT).currency(CURRENCY).fromAccountId(FROM_ACCOUNT_RESPONSE_FOR_TRANSFER).toAccountId(TO_ACCOUNT_RESPONSE_FOR_TRANSFER).build();
-    public static final ResponseSchema.PagedTransferResponse<?> PAGED_TRANSFER_RESPONSE = ResponseSchema.PagedTransferResponse.builder().content(Collections.singletonList(TRANSFER_RESPONSE)).page(1).totalElements(1).totalPages(1).previous(false).next(false).sort("asc").build();
+    public static final ResponseSchema.PagedTransferResponse PAGED_TRANSFER_RESPONSE = ResponseSchema.PagedTransferResponse.builder().content(Collections.singletonList(TRANSFER_RESPONSE)).page(1).totalElements(1).totalPages(1).previous(false).next(false).sort("asc").build();
     public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjI2ODY5OTM5LCJleHAiOjE2Mjc0NzQ3Mzl9.8lFaVMiwRNvq4NwmO1k9Ls6qE1xi07YUHL2C2cJ6F0OuQ90zh_3GvRQ-2D6HulJn4H09ZhlgffounVgjBFJt6w";
 }

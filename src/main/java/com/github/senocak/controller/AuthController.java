@@ -38,13 +38,11 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiOperation(value = "Login Endpoint", response = ResponseSchema.class, tags = "auth")
-    public ResponseEntity<?> login(@RequestBody RequestSchema.LoginRequest loginRequest) throws ServerException {
+    public ResponseEntity<ResponseSchema> login(@RequestBody RequestSchema.LoginRequest loginRequest) throws ServerException {
         jsonSchemaValidator.validateJsonSchema(loginRequest, RequestSchema.LoginRequest.class);
-        if (loginRequest.getUsernameOrEmail().contains("@")) {
-            if (!jsonSchemaValidator.isValidEmailAddress(loginRequest.getUsernameOrEmail())) {
-                log.error("Email: {} is not valid.", loginRequest.getUsernameOrEmail());
-                throw new ServerException(ErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{"Email is not valid"}, HttpStatus.BAD_REQUEST);
-            }
+        if (loginRequest.getUsernameOrEmail().contains("@") && !jsonSchemaValidator.isValidEmailAddress(loginRequest.getUsernameOrEmail())) {
+            log.error("Email: {} is not valid.", loginRequest.getUsernameOrEmail());
+            throw new ServerException(ErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{"Email is not valid"}, HttpStatus.BAD_REQUEST);
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -64,7 +62,7 @@ public class AuthController {
     }
     @PostMapping("/register")
     @ApiOperation(value = "Register Endpoint", response = ResponseSchema.class, tags = "auth")
-    public ResponseEntity<?> register(@RequestBody RequestSchema.SignUpRequest signUpRequest) throws ServerException {
+    public ResponseEntity<ResponseSchema> register(@RequestBody RequestSchema.SignUpRequest signUpRequest) throws ServerException {
         if (userService.existsByUsername(signUpRequest.getUsername()))
             throw new ServerException(ErrorMessageType.JSON_SCHEMA_VALIDATOR, new String[]{"Username is already taken!"}, HttpStatus.BAD_REQUEST);
         if (userService.existsByEmail(signUpRequest.getEmail()))

@@ -47,7 +47,7 @@ class AccountControllerTest {
         Mockito.doReturn(TestConstants.USER_PROFILE).when(modelMapper).map(TestConstants.USER_1, ResponseSchema.UserProfile.class);
         response.setMessage(TestConstants.USER_PROFILE);
         // When
-        ResponseEntity<?> responseEntity = accountController.getUser();
+        ResponseEntity<ResponseSchema> responseEntity = accountController.getUser();
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
@@ -64,7 +64,7 @@ class AccountControllerTest {
         Mockito.doReturn(TestConstants.USER_PROFILE).when(modelMapper).map(TestConstants.USER_1, ResponseSchema.UserProfile.class);
         response.setMessage(TestConstants.USER_PROFILE);
         // When
-        ResponseEntity<?> responseEntity = accountController.patchUser(userUpdateProfile);
+        ResponseEntity<ResponseSchema> responseEntity = accountController.patchUser(userUpdateProfile);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
@@ -76,7 +76,7 @@ class AccountControllerTest {
         Mockito.doNothing().when(accountService).deleteAccountById(TestConstants.ACCOUNT_1.getId());
         response.setMessage(new String[]{"Account Deleted"});
         // When
-        ResponseEntity<?> responseEntity = accountController.deleteAccount(TestConstants.ACCOUNT_1.getId());
+        ResponseEntity<ResponseSchema> responseEntity = accountController.deleteAccount(TestConstants.ACCOUNT_1.getId());
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
@@ -95,7 +95,7 @@ class AccountControllerTest {
         Mockito.doReturn(accountResponse).when(modelMapper).map(TestConstants.ACCOUNT_1, ResponseSchema.AccountResponse.class);
         response.setMessage(accountResponse);
         // When
-        ResponseEntity<?> responseEntity = accountController.addAccount(newAccount);
+        ResponseEntity<ResponseSchema> responseEntity = accountController.addAccount(newAccount);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
@@ -114,7 +114,7 @@ class AccountControllerTest {
         Mockito.doReturn(TestConstants.TRANSFER).when(modelMapper).map(TestConstants.TRANSFER, ResponseSchema.TransferResponse.class);
         response.setMessage(TestConstants.TRANSFER);
         // When
-        ResponseEntity<?> responseEntity = accountController.postTransfer(transfer);
+        ResponseEntity<ResponseSchema> responseEntity = accountController.postTransfer(transfer);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
@@ -167,7 +167,7 @@ class AccountControllerTest {
         Mockito.doReturn(TestConstants.PAGED_TRANSFER_RESPONSE).when(modelMapper).map(null, ResponseSchema.PagedTransferResponse.class);
         response.setMessage(TestConstants.PAGED_TRANSFER_RESPONSE);
         // When
-        ResponseEntity<?> responseEntity = accountController.getTransfersForAccount(accountId, transferType, 1, 10, "asc", "", "");
+        ResponseEntity<ResponseSchema> responseEntity = accountController.getTransfersForAccount(accountId, transferType, 1, 10, "asc", "", "");
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);

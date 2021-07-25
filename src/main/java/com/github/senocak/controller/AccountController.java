@@ -12,6 +12,7 @@ import com.github.senocak.service.TransferService;
 import com.github.senocak.service.UserService;
 import com.github.senocak.util.JsonSchemaValidator;
 import com.github.senocak.util.ErrorMessageType;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ import static com.github.senocak.util.AppConstants.DEFAULT_PAGE_SIZE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Api(value = "AccountController", description = "Account Controller")
 public class AccountController {
     private final UserService userService;
     private final TransferService transferService;
@@ -40,7 +43,7 @@ public class AccountController {
 
     @GetMapping("/me")
     @ApiOperation(value = "Get User Info", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> getUser() throws ServerException {
+    public ResponseEntity<ResponseSchema> getUser() throws ServerException {
         User user = userService.loggedInUser();
         log.info("Logged in user is: {}", user);
         ResponseSchema.UserProfile userProfile = modelMapper.map(user, ResponseSchema.UserProfile.class);
@@ -50,7 +53,7 @@ public class AccountController {
     }
     @PatchMapping("/update")
     @ApiOperation(value = "Update Profile", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> patchUser(@RequestBody RequestSchema.UserUpdateProfile userUpdateProfile) throws ServerException {
+    public ResponseEntity<ResponseSchema> patchUser(@RequestBody RequestSchema.UserUpdateProfile userUpdateProfile) throws ServerException {
         jsonSchemaValidator.validateJsonSchema(userUpdateProfile, RequestSchema.UserUpdateProfile.class);
         User user = userService.patchUser(userUpdateProfile);
         log.info("Logged in user is: {}", user);
@@ -61,14 +64,14 @@ public class AccountController {
     }
     @DeleteMapping("/{accountId}")
     @ApiOperation(value = "Delete Account By Id", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> deleteAccount(@PathVariable String accountId) throws ServerException {
+    public ResponseEntity<ResponseSchema> deleteAccount(@PathVariable String accountId) throws ServerException {
         accountService.deleteAccountById(accountId);
         response.setMessage(new String[]{"Account Deleted"});
         return ResponseEntity.ok(response);
     }
     @PostMapping("/addAccount")
     @ApiOperation(value = "Add New Account", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> addAccount(@RequestBody RequestSchema.NewAccount newAccount) throws ServerException {
+    public ResponseEntity<ResponseSchema> addAccount(@RequestBody RequestSchema.NewAccount newAccount) throws ServerException {
         jsonSchemaValidator.validateJsonSchema(newAccount, RequestSchema.NewAccount.class);
         accountService.validateCurrency(newAccount.getCurrency());
         Account addNewAccount = accountService.addNewAccount(newAccount);
@@ -78,7 +81,7 @@ public class AccountController {
     }
     @PostMapping("/send")
     @ApiOperation(value = "Send Money", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> postTransfer(@RequestBody RequestSchema.Transfer transfer) throws ServerException, JsonProcessingException {
+    public ResponseEntity<ResponseSchema> postTransfer(@RequestBody RequestSchema.Transfer transfer) throws ServerException, JsonProcessingException {
         jsonSchemaValidator.validateJsonSchema(transfer, RequestSchema.Transfer.class);
         transferService.validateTransferObject(transfer);
         Transfer transferSaved = transferService.create(
@@ -93,7 +96,7 @@ public class AccountController {
     }
     @GetMapping("/{accountId}/{transferType}")
     @ApiOperation(value = "Get All Transfer For Account", response = ResponseSchema.class, tags = {"user"})
-    public ResponseEntity<?> getTransfersForAccount(@PathVariable String accountId, @PathVariable String transferType,
+    public ResponseEntity<ResponseSchema> getTransfersForAccount(@PathVariable String accountId, @PathVariable String transferType,
         @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER) Integer page,
         @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) Integer size,
         @RequestParam(defaultValue = "asc") String by,
@@ -118,7 +121,7 @@ public class AccountController {
         Instant from = !fromDate.isEmpty() ? Instant.parse(fromDate) : null;
         Instant to = !toDate.isEmpty() ? Instant.parse(toDate) : null;
 
-        ResponseSchema.PagedTransferResponse<?> findAll = transferService.getAllForAccount(transferType, accountId, paging, from, to);
+        ResponseSchema.PagedTransferResponse findAll = transferService.getAllForAccount(transferType, accountId, paging, from, to);
         response.setMessage(modelMapper.map(findAll, ResponseSchema.PagedTransferResponse.class));
         return ResponseEntity.ok(response);
     }

@@ -38,6 +38,7 @@ class TransferServiceTest {
     @Mock RestTemplate restTemplate;
     @Mock ObjectMapper objectMapper;
     @Mock AccountService accountService;
+    @Mock ResponseEntity responseEntity;
 
     @BeforeEach
     void init(){
@@ -85,10 +86,9 @@ class TransferServiceTest {
         transfer.setToAccountId(UUID.fromString(TestConstants.ACCOUNT_2.getId()));
         Mockito.doReturn(TestConstants.USER_1).when(userService).loggedInUser();
         Mockito.doReturn(TestConstants.ACCOUNT_1).when(accountService).findById(transfer.getFromAccountId().toString());
-        ResponseEntity<?> responseEntityMocked = Mockito.mock(ResponseEntity.class);
-        Mockito.doReturn(responseEntityMocked).when(restTemplate).getForEntity(CURRENCY_TOKEN + "?source="+transfer.getCurrency()+"&target="+TestConstants.ACCOUNT_1.getCurrency(), String.class);
-        Mockito.doReturn("").when(responseEntityMocked).getBody();
-        ResponseSchema.CurrencyResponseFromAPI<?> currencyResponseFromAPI = new ResponseSchema.CurrencyResponseFromAPI<>();
+        Mockito.doReturn(responseEntity).when(restTemplate).getForEntity(CURRENCY_TOKEN + "?source="+transfer.getCurrency()+"&target="+TestConstants.ACCOUNT_1.getCurrency(), String.class);
+        Mockito.doReturn("").when(responseEntity).getBody();
+        ResponseSchema.CurrencyResponseFromAPI currencyResponseFromAPI = new ResponseSchema.CurrencyResponseFromAPI();
         Map<String, String> map = new HashMap<>();
         map.put("TRY", "2");
         currencyResponseFromAPI.setRates(map);
@@ -109,10 +109,9 @@ class TransferServiceTest {
         transfer.setToAccountId(UUID.fromString(TestConstants.ACCOUNT_2.getId()));
         Mockito.doReturn(TestConstants.USER_1).when(userService).loggedInUser();
         Mockito.doReturn(TestConstants.ACCOUNT_1).when(accountService).findById(transfer.getFromAccountId().toString());
-        ResponseEntity<?> responseEntityMocked = Mockito.mock(ResponseEntity.class);
-        Mockito.doReturn(responseEntityMocked).when(restTemplate).getForEntity(CURRENCY_TOKEN + transfer.getCurrency(), String.class);
-        Mockito.doReturn("").when(responseEntityMocked).getBody();
-        ResponseSchema.CurrencyResponseFromAPI<?> currencyResponseFromAPI = new ResponseSchema.CurrencyResponseFromAPI<>();
+        Mockito.doReturn(responseEntity).when(restTemplate).getForEntity(CURRENCY_TOKEN + transfer.getCurrency(), String.class);
+        Mockito.doReturn("").when(responseEntity).getBody();
+        ResponseSchema.CurrencyResponseFromAPI currencyResponseFromAPI = new ResponseSchema.CurrencyResponseFromAPI();
         Map<String, String> map = new HashMap<>();
         map.put("TRY", "0");
         currencyResponseFromAPI.setRates(map);
@@ -136,14 +135,13 @@ class TransferServiceTest {
         Mockito.doReturn(TestConstants.ACCOUNT_2).when(accountService).findById(TestConstants.TRANSFER
             .getToAccountId().getId());
 
-        ResponseEntity<?> responseEntityMocked = Mockito.mock(ResponseEntity.class);
-        Mockito.doReturn(responseEntityMocked).when(restTemplate).getForEntity(CURRENCY_TOKEN + "?source="+TestConstants.TRANSFER
+        Mockito.doReturn(responseEntity).when(restTemplate).getForEntity(CURRENCY_TOKEN + "?source="+TestConstants.TRANSFER
             .getCurrency()+"&target="+TestConstants.ACCOUNT_1.getCurrency(), String.class);
-        Mockito.doReturn(responseEntityMocked).when(restTemplate).getForEntity(CURRENCY_TOKEN + "?source="+TestConstants.TRANSFER
+        Mockito.doReturn(responseEntity).when(restTemplate).getForEntity(CURRENCY_TOKEN + "?source="+TestConstants.TRANSFER
             .getCurrency()+"&target="+TestConstants.ACCOUNT_2.getCurrency(), String.class);
-        Mockito.doReturn("").when(responseEntityMocked).getBody();
+        Mockito.doReturn("").when(responseEntity).getBody();
 
-        ResponseSchema.CurrencyResponseFromAPI<?> currencyResponseFromAPI = new ResponseSchema.CurrencyResponseFromAPI<>();
+        ResponseSchema.CurrencyResponseFromAPI currencyResponseFromAPI = new ResponseSchema.CurrencyResponseFromAPI();
         Map<String, String> map = new HashMap<>();
         map.put("TRY", "2");
         currencyResponseFromAPI.setRates(map);
@@ -177,7 +175,7 @@ class TransferServiceTest {
         Mockito.doReturn(TestConstants.ACCOUNT_1).when(accountService).findById(TestConstants.ACCOUNT_1.getId());
         Mockito.doReturn(Mockito.mock(Page.class)).when(transferRepository).findAllByToAccountIdAndCreatedAtIsBetween(TestConstants.ACCOUNT_1, from, to, paging);
         // When
-        ResponseSchema.PagedTransferResponse<?> getAllForAccount = transferService.getAllForAccount("incomings", TestConstants.ACCOUNT_1.getId(), paging, from, to);
+        ResponseSchema.PagedTransferResponse getAllForAccount = transferService.getAllForAccount("incomings", TestConstants.ACCOUNT_1.getId(), paging, from, to);
         // Then
         Assertions.assertThat(getAllForAccount.getContent()).isEmpty();
         Assertions.assertThat(getAllForAccount.getPage()).isOne();

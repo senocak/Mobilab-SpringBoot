@@ -3,7 +3,6 @@ package com.github.senocak.payload;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -69,9 +68,7 @@ public class RequestSchema {
     }
 
     @Data
-    @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UserUpdateProfile {
@@ -81,9 +78,7 @@ public class RequestSchema {
     }
 
     @Data
-    @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class NewAccount {

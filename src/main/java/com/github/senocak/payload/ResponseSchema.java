@@ -79,7 +79,7 @@ public class ResponseSchema {
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class PagedTransferResponse<T> {
+    public static class PagedTransferResponse {
         private List<TransferResponse> content;
         private int page;
         private long totalElements;
@@ -90,12 +90,8 @@ public class ResponseSchema {
     }
 
     @Data
-    @Builder
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CurrencyResponseFromAPI<T> {
+    public static class CurrencyResponseFromAPI {
         private String timestamp;
         private String source;
         private String date;

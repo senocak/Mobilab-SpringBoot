@@ -10,6 +10,7 @@ public enum ErrorMessageType {
   MANDATORY_INPUT_MISSING("SVC0005", "Mandatory input %1 %2 is missing from request"),
   JSON_SCHEMA_VALIDATOR("SVC0007", "Schema failed."),
   NOT_FOUND("SVC0008", "Entry is not found");
+  // https://www.openmobilealliance.org/wp/OMNA/RESTful_Network_APIs/service-and-policy-exception-codes-registry-for-oma-restful-network-APIs.html
 
   private final String messageId;
   private final String text;

@@ -98,7 +98,7 @@ class AuthControllerTest {
         responseMap.put("user", TestConstants.USER_PROFILE);
         response.setMessage(responseMap);
         // When
-        ResponseEntity<?> responseEntity = authController.login(loginRequest);
+        ResponseEntity<ResponseSchema> responseEntity = authController.login(loginRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
@@ -147,7 +147,7 @@ class AuthControllerTest {
         Mockito.doReturn(TestConstants.USER_1).when(userService).save(Mockito.any(User.class));
         response.setMessage(new String[]{"User registered successfully"});
         // When
-        ResponseEntity<?> responseEntity = authController.register(signUpRequest);
+        ResponseEntity<ResponseSchema> responseEntity = authController.register(signUpRequest);
         // Then
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(response);
