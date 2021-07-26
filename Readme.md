@@ -6,6 +6,7 @@
 - List incoming or outgoing money transfers
 - Unit Tests(60) and Integration Tests(16). Total: 76 (Total Coverage: %98 Classes and %93 Methods and %83 Lines)
 - Dockerized both backend and db containers
+- Swagger (**http://localhost:8080/swagger-ui.html**)
 
 ### Pre-Requirements
 - Docker must  be installed to build (for integration tests and development)
