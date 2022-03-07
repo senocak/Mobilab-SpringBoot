@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 @Slf4j
 public class Handler extends ResponseEntityExceptionHandler {
+    // comment
     private static final ResponseSchema RESPONSE_SCHEMA = new ResponseSchema(false, null);
 
     @ExceptionHandler(value = { BadCredentialsException.class })
